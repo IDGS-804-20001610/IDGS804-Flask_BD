@@ -11,3 +11,4 @@ class Alumnos(db.Model):
     apaterno = db.Column(db.String(50))
     email = db.Column(db.String(50))
     #create_data = db.Column(db.DateTime, default = datetime.datetime.now) 
+    

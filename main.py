@@ -3,12 +3,22 @@ from config import DevelopmentConfig
 from flask_wtf.csrf import CSRFProtect
 
 from models import db, Alumnos
-
+from decouple import config
+import pymysql
 import forms
 
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
 csrf = CSRFProtect()
+
+def get_connection():
+    return pymysql.connect(
+        host = config('MYSQL_HOST'),
+        database = config('MYSQL_DB'),
+        user = config('MYSQL_USER'),
+        password = config('MYSQL_PASSWORD')
+
+    )
 
 @app.route('/', methods = ['GET', 'POST'])
 def index():
@@ -27,7 +37,17 @@ def ABCompleto():
     create_form = forms.UserForm(request.form)
 
     #SELECT * FROM ALUMNOS
-    alumnos = Alumnos.query.all()
+    #alumnos = Alumnos.query.all()
+    #print(alumnos)
+    sql = "CALL get_alumnos();"
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute(sql)
+
+    alumnos = cursor.fetchall()
+    print(alumnos)
+    conn.commit()
+
     return render_template('ABCompleto.html', form = create_form, alumnos = alumnos)
 
 @app.route("/modificar", methods = ['GET', 'POST'])
@@ -84,4 +104,4 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
 
-    app.run(port = 3000)
+    app.run(port = 7000)

@@ -1,24 +1,28 @@
-from db import get_connection
+from dbi import get_connection
+
 
 try: 
     connection = get_connection()
     with connection.cursor() as cursor:
-        cursor.execute('call get_alumnos()')
-        connection.close()
+        cursor.execute('CALL get_alumnos()')
         resultset = cursor.fetchall()
         for row in resultset:
             print(row)
+            print(resultset)
+    connection.close()
 except Exception as ex:
     print(ex)
+
+
 
 '''try: 
     connection = get_connection()
     with connection.cursor() as cursor:
-        cursor.execute('call get_alumno(%s)', (1,))
-        connection.close()
+        cursor.execute('CALL get_alumno(%s)', (1,))
         resultset = cursor.fetchall()
         for row in resultset:
             print(resultset)
+    connection.close()
 except Exception as ex:
     print(ex)'''
 
